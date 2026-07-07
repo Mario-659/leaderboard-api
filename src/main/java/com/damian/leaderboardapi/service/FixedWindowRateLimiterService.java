@@ -9,12 +9,10 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 
 @Service
-@ConditionalOnProperty(name = "rate-limiter-strategy", havingValue = "fixed-window")
+@ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "fixed-window")
 public class FixedWindowRateLimiterService extends RateLimiter {
     private static final String RATE_LIMITER_KEY = "FixedWindowRateLimiterKey-";
 
-    private final Long windowDurationsSeconds;
-    private final Long maxRequestsPerWindow;
     private final RedisTemplate<String, String> redisTemplate;
 
     public FixedWindowRateLimiterService(
@@ -22,8 +20,7 @@ public class FixedWindowRateLimiterService extends RateLimiter {
             @Value("${rate-limiter.max-requests-per-window}") Long maxRequestsPerWindow,
             RedisTemplate<String, String> redisTemplate
     ) {
-        this.windowDurationsSeconds = windowDurationSeconds;
-        this.maxRequestsPerWindow = maxRequestsPerWindow;
+        super(windowDurationSeconds, maxRequestsPerWindow);
         this.redisTemplate = redisTemplate;
     }
 

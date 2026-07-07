@@ -12,7 +12,16 @@ import java.io.IOException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public abstract class RateLimiter extends OncePerRequestFilter {
-    protected abstract boolean isAllowed(String origin);
+    protected final Long windowDurationsSeconds;
+    protected final Long maxRequestsPerWindow;
+
+    protected RateLimiter(
+            Long windowDurationSeconds,
+            Long maxRequestsPerWindow
+    ) {
+        this.windowDurationsSeconds = windowDurationSeconds;
+        this.maxRequestsPerWindow = maxRequestsPerWindow;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -23,4 +32,6 @@ public abstract class RateLimiter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
+    protected abstract boolean isAllowed(String origin);
 }
