@@ -1,4 +1,4 @@
-package com.damian.leaderboardapi.service;
+package com.damian.leaderboardapi.service.ratelimiter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

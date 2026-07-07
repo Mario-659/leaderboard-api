@@ -1,4 +1,4 @@
-package com.damian.leaderboardapi.service;
+package com.damian.leaderboardapi.service.ratelimiter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
