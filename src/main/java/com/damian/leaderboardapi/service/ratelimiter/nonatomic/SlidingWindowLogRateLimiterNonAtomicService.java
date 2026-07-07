@@ -1,6 +1,7 @@
-package com.damian.leaderboardapi.service.ratelimiter;
+package com.damian.leaderboardapi.service.ratelimiter.nonatomic;
 
 import com.damian.leaderboardapi.dto.RateLimitAttemptDto;
+import com.damian.leaderboardapi.service.ratelimiter.RateLimiter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,13 +11,13 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Service
-@ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "sliding-window-log")
-public class SlidingWindowLogRateLimiterService extends RateLimiter {
+@ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "sliding-window-log-non-atomic")
+public class SlidingWindowLogRateLimiterNonAtomicService extends RateLimiter {
     private static final String RATE_LIMITER_KEY = "FixedWindowRateLimiterKey-";
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public SlidingWindowLogRateLimiterService(
+    public SlidingWindowLogRateLimiterNonAtomicService(
             @Value("${rate-limiter.window-duration-seconds}") Long windowDurationSeconds,
             @Value("${rate-limiter.max-requests-per-window}") Long maxRequestsPerWindow,
             RedisTemplate<String, String> redisTemplate
