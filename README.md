@@ -17,8 +17,16 @@ One key per client with window size set as expiration. Low memory usage but poss
 3. Key expires at boundary.
 4. Fire max amount of requests again.
 
+#### Sliding window log
+
+Each request timestamp saved, expired entries removed from queue upon each request.
 
 ### TODO
 
 - [ ] convert rate limiter algorithms to lua scripts for atomic operations
+
+### Resources
+
+- https://redis.io/tutorials/rate-limiting-in-java-spring-with-redis/
+- https://redis.io/tutorials/howtos/ratelimiting/
  
