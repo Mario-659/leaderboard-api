@@ -35,7 +35,7 @@ public class SlidingWindowLogRateLimiterService extends RateLimiter {
 
         Long size = zSetOps().size(key);
 
-        if (size > maxRequestsPerWindow) {
+        if (size >= maxRequestsPerWindow) {
             return new RateLimitAttemptDto(false, 0L);
         }
 
