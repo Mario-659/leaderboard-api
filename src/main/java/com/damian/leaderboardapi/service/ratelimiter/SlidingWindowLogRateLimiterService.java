@@ -1,5 +1,6 @@
 package com.damian.leaderboardapi.service.ratelimiter;
 
+import com.damian.leaderboardapi.dto.RateLimitAttemptDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,7 +24,7 @@ public class SlidingWindowLogRateLimiterService extends RateLimiter {
     }
 
     @Override
-    public boolean isAllowed(String origin) {
+    public RateLimitAttemptDto attempt(String origin) {
         String key = RATE_LIMITER_KEY + origin;
 
         Long now = System.currentTimeMillis();
@@ -35,12 +36,12 @@ public class SlidingWindowLogRateLimiterService extends RateLimiter {
         Long size = zSetOps().size(key);
 
         if (size > maxRequestsPerWindow) {
-            return false;
+            return new RateLimitAttemptDto(false, 0L);
         }
 
         zSetOps().add(key, member, now);
 
-        return true;
+        return new RateLimitAttemptDto(true, 0L);
     }
 
     private ZSetOperations<String, String> zSetOps() {

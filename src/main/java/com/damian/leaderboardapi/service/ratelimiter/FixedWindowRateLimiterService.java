@@ -1,5 +1,6 @@
 package com.damian.leaderboardapi.service.ratelimiter;
 
+import com.damian.leaderboardapi.dto.RateLimitAttemptDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,7 +26,7 @@ public class FixedWindowRateLimiterService extends RateLimiter {
     }
 
     @Override
-    public boolean isAllowed(String origin) {
+    public RateLimitAttemptDto attempt(String origin) {
         String userKey = RATE_LIMITER_KEY + origin;
 
         Long value = valueOps().increment(userKey);
@@ -34,7 +35,7 @@ public class FixedWindowRateLimiterService extends RateLimiter {
             valueOps().getAndExpire(userKey, Duration.ofSeconds(windowDurationsSeconds));
         }
 
-        return value <= maxRequestsPerWindow;
+        return new RateLimitAttemptDto(value <= maxRequestsPerWindow, 0L);
     }
 
     private ValueOperations<String, String> valueOps() {

@@ -1,5 +1,6 @@
 package com.damian.leaderboardapi.service.ratelimiter;
 
+import com.damian.leaderboardapi.dto.RateLimitAttemptDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,13 +26,16 @@ public abstract class RateLimiter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!isAllowed(request.getRemoteAddr())) {
+        RateLimitAttemptDto attempt = attempt(request.getRemoteAddr());
+
+        if (!attempt.isAllowed()) {
             response.setStatus(429); // too many requests status code
+            response.setHeader("Retry-After", attempt.retryAfter().toString());
             return;
         }
 
         filterChain.doFilter(request, response);
     }
 
-    protected abstract boolean isAllowed(String origin);
+    protected abstract RateLimitAttemptDto attempt(String origin);
 }
