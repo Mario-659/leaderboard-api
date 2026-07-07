@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "sliding-window-log")
 public class SlidingWindowLogRateLimiterService extends RateLimiter {
@@ -36,12 +38,23 @@ public class SlidingWindowLogRateLimiterService extends RateLimiter {
         Long size = zSetOps().size(key);
 
         if (size >= maxRequestsPerWindow) {
-            return new RateLimitAttemptDto(false, 0L);
+            return new RateLimitAttemptDto(false, getRetryAfterSeconds(key, now / 1000, windowDurationsSeconds));
         }
 
         zSetOps().add(key, member, now);
 
         return new RateLimitAttemptDto(true, 0L);
+    }
+
+    private Long getRetryAfterSeconds(String key, long nowSec, long windowSec) {
+        Set<ZSetOperations.TypedTuple<String>> oldest =
+                zSetOps().rangeWithScores(key, 0, 0);
+        if (oldest == null || oldest.isEmpty()) {
+            return 0L;
+        }
+        double oldestScore = oldest.iterator().next().getScore();
+        long retryAt = (long) (oldestScore + windowSec * 1000) / 1000;
+        return Math.max(0L, retryAt - nowSec);
     }
 
     private ZSetOperations<String, String> zSetOps() {

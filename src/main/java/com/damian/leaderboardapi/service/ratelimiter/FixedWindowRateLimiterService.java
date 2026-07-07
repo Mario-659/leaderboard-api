@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "fixed-window")
@@ -35,7 +36,9 @@ public class FixedWindowRateLimiterService extends RateLimiter {
             valueOps().getAndExpire(userKey, Duration.ofSeconds(windowDurationsSeconds));
         }
 
-        return new RateLimitAttemptDto(value <= maxRequestsPerWindow, 0L);
+        Long pttl = redisTemplate.getExpire(userKey, TimeUnit.SECONDS);
+
+        return new RateLimitAttemptDto(value <= maxRequestsPerWindow, pttl);
     }
 
     private ValueOperations<String, String> valueOps() {
