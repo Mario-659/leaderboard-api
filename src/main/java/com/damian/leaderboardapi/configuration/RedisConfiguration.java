@@ -42,7 +42,13 @@ public class RedisConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "fixed-window")
-    public RedisScript<List> slidingWindowRateLimiterScript() {
+    public RedisScript<List> fixedWindowRateLimiterScript() {
         return RedisScript.of(new ClassPathResource("scripts/fixed_window_rate_limiter.lua"), List.class);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "sliding-window-log")
+    public RedisScript<List> slidingWindowRateLimiterScript() {
+        return RedisScript.of(new ClassPathResource("scripts/sliding_window_log_rate_limiter.lua"), List.class);
     }
 }
