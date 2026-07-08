@@ -1,5 +1,6 @@
 package com.damian.leaderboardapi.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +15,20 @@ import java.util.List;
 
 @Configuration
 public class RedisConfiguration {
+
+    @Value("${redis.hostname}")
+    private String redisHostname;
+
+    @Value("${redis.port}")
+    private Integer redisPort;
+
+    @Value("${redis.password}")
+    private String redisPassword;
+
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration("localhost", 49153);
-        configuration.setPassword("redispw");
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHostname, redisPort);
+        configuration.setPassword(redisPassword);
         return new LettuceConnectionFactory(configuration);
     }
 
