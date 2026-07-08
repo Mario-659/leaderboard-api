@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "fixed-window-non-atomic")
 public class FixedWindowRateLimiterNonAtomicService extends RateLimiter {
-    private static final String RATE_LIMITER_KEY = "FixedWindowRateLimiterKey-";
+    private static final String RATE_LIMITER_KEY = "FixedWindowRL-";
 
     private final RedisTemplate<String, String> redisTemplate;
 

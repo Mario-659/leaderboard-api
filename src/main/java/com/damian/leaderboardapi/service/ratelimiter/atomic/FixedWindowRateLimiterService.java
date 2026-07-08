@@ -16,7 +16,7 @@ import java.util.List;
 @ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "fixed-window")
 @Log4j2
 public class FixedWindowRateLimiterService extends RateLimiter {
-    private static final String RATE_LIMITER_KEY = "FixedWindowRateLimiterKey-";
+    private static final String RATE_LIMITER_KEY = "FixedWindowRL-";
 
     private final RedisScript<List> redisScript;
     private final StringRedisTemplate redisTemplate;

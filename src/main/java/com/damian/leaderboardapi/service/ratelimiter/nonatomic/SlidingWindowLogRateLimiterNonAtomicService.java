@@ -13,7 +13,7 @@ import java.util.Set;
 @Service
 @ConditionalOnProperty(name = "rate-limiter.strategy", havingValue = "sliding-window-log-non-atomic")
 public class SlidingWindowLogRateLimiterNonAtomicService extends RateLimiter {
-    private static final String RATE_LIMITER_KEY = "FixedWindowRateLimiterKey-";
+    private static final String RATE_LIMITER_KEY = "SlidingWindowLogRL-";
 
     private final RedisTemplate<String, String> redisTemplate;
 
